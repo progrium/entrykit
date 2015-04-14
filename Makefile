@@ -10,7 +10,7 @@ build:
 
 deps:
 	go get -u github.com/progrium/gh-release/...
-	go get || true
+	go get ./... || true
 
 release:
 	rm -rf release && mkdir release
