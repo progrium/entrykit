@@ -1,0 +1,11 @@
+build
+release
+entrykit
+cmd/entrykit
+cmd/codep
+cmd/switch
+cmd/posthook
+cmd/prehook
+cmd/render
+cmd/waitgrp
+codep/codep/codep
