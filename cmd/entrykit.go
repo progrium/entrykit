@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/progrium/entrykit"
@@ -13,12 +14,18 @@ import (
 	_ "github.com/progrium/entrykit/waitgrp"
 )
 
+var Version string
+
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "symlink" {
-		entrykit.Symlink()
-		return
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "-v", "--version":
+			fmt.Println(Version)
+			os.Exit(0)
+		case "--symlink":
+			entrykit.Symlink()
+			os.Exit(0)
+		}
 	}
-	cmd := entrykit.RanAs()
-	entrykit.Cmds[cmd](
-		entrykit.NewConfig(cmd, true))
+	entrykit.RunCmd()
 }

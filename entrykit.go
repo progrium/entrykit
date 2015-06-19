@@ -2,6 +2,7 @@ package entrykit
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -9,10 +10,9 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/kardianos/osext"
 	"github.com/mgood/go-posix"
 )
-
-var Version string
 
 var Cmds = make(map[string]func(config *Config))
 
@@ -26,10 +26,10 @@ var runlist = []string{
 }
 
 func init() {
-	Cmds[""] = Run
+	Cmds["entrykit"] = RunMulti
 }
 
-func Run(config *Config) {
+func RunMulti(config *Config) {
 	if len(config.Tasks) > 0 {
 		Error(fmt.Errorf("Entrykit cannot take tasks via arguments"))
 	}
@@ -89,20 +89,26 @@ func CommandTask(task string) *exec.Cmd {
 }
 
 func Symlink() {
+	binaryPath, err := osext.Executable()
+	if err != nil {
+		log.Fatal(err)
+	}
 	for name, _ := range Cmds {
-		os.Symlink(os.Args[0], filepath.Dir(os.Args[0])+"/"+name)
+		target := filepath.Dir(binaryPath) + "/" + name
+		fmt.Println("Creating symlink", target, "...")
+		os.Symlink(os.Args[0], target)
 	}
 }
 
-func RanAs() string {
+func RunCmd() {
 	cmdRun := filepath.Base(os.Args[0])
-	cmd := ""
+	cmd := "entrykit"
 	for name := range Cmds {
 		if name == cmdRun {
 			cmd = name
 		}
 	}
-	return cmd
+	Cmds[cmd](NewConfig(cmd, true))
 }
 
 func Error(err error) {

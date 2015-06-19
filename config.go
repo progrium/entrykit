@@ -29,15 +29,13 @@ func NewConfig(cmd string, exec bool) *Config {
 Loop:
 	for i, arg := range args {
 		switch arg {
-		case "-v", "--version":
-			fmt.Println(Version)
-			os.Exit(0)
 		case "-e":
 			useEnv = true
 		case "-E":
 			useEnv = true
 			namespaceEnv = true
 		case "-p":
+			println("warning: -p flag not implemented yet")
 			config.Prefix = true
 		case "-f":
 			configFile = args[i+1]

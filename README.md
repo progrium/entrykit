@@ -8,7 +8,7 @@ Entrypoint tools for elegant, programmable containers
  - Good for image authors. Eliminates helper/start scripts or depending on shells.
  - Can be good for image users. Allows users to program/extend containers.
 
-/bin/entrykit symlink
+/bin/entrykit --symlink
 
 -e allow environment as well
 -E allow environment prefixed with EK_
