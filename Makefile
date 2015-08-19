@@ -1,6 +1,6 @@
 NAME=entrykit
 ARCH=$(shell uname -m)
-VERSION=0.3.0
+VERSION=0.2.1
 
 .PHONY: build release
 
@@ -10,7 +10,7 @@ build:
 
 deps:
 	go get -u github.com/progrium/gh-release/...
-	go get ./... || true
+	go get -u ./... || true
 
 release:
 	rm -rf release && mkdir release
