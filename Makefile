@@ -1,5 +1,6 @@
 NAME=entrykit
 ARCH=$(shell uname -m)
+ORG=gliderlabs
 VERSION=0.2.1
 
 .PHONY: build release
@@ -18,6 +19,14 @@ release:
 	tar -zcf release/$(NAME)_$(VERSION)_Darwin_$(ARCH).tgz -C build/Darwin $(NAME)
 	gh-release create progrium/$(NAME) $(VERSION) \
 		$(shell git rev-parse --abbrev-ref HEAD) v$(VERSION)
+
+circleci:
+	rm ~/.gitconfig
+	rm -rf /home/ubuntu/.go_workspace/src/github.com/$(ORG)/$(NAME) && cd .. \
+		&& mkdir -p /home/ubuntu/.go_workspace/src/github.com/$(ORG) \
+		&& mv $(NAME) /home/ubuntu/.go_workspace/src/github.com/$(ORG)/$(NAME) \
+		&& ln -s /home/ubuntu/.go_workspace/src/github.com/$(ORG)/$(NAME) $(NAME)
+
 
 clean:
 	rm -rf build release

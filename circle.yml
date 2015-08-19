@@ -1,6 +1,6 @@
 dependencies:
   pre:
-    - rm ~/.gitconfig
+    - make circleci
     - make deps
   override:
     - make build
