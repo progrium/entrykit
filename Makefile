@@ -1,6 +1,6 @@
 NAME=entrykit
 ARCH=$(shell uname -m)
-ORG=gliderlabs
+ORG=progrium
 VERSION=0.2.1
 
 .PHONY: build release
