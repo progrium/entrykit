@@ -1,12 +1,14 @@
+machine:
+  services:
+    - docker
+
 dependencies:
   pre:
-    - make circleci
-    - make deps
+    - docker run --rm gliderlabs/glu | tar xC /home/ubuntu/bin
+    - glu circleci
+    - glu container up
   override:
-    - make build
-  post:
-    - tar -czvf $CIRCLE_ARTIFACTS/entrykit-linux.tgz -C build/Linux entrykit
-    - tar -czvf $CIRCLE_ARTIFACTS/entrykit-darwin.tgz -C build/Darwin entrykit
+    - glu build darwin,linux ./cmd
 
 test:
   override:
