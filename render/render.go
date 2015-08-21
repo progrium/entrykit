@@ -3,8 +3,10 @@ package render
 import (
 	"io/ioutil"
 
-	"github.com/mgood/go-posix"
+	"github.com/gliderlabs/sigil"
 	"github.com/progrium/entrykit"
+
+	_ "github.com/gliderlabs/sigil/builtin"
 )
 
 func init() {
@@ -13,18 +15,18 @@ func init() {
 
 func Run(config *entrykit.Config) {
 	defer entrykit.Exec(config.Exec)
-	for _, target := range config.Tasks {
+	for name, target := range config.Tasks {
 		template := target + ".tmpl"
 		data, err := ioutil.ReadFile(template)
 		if err != nil {
 			entrykit.Error(err)
 		}
-		render, err := posix.ExpandEnv(string(data))
+		render, err := sigil.Execute(data, nil, name)
 		if err != nil {
 			entrykit.Error(err)
 		}
 		// todo: use same filemode as template
-		err = ioutil.WriteFile(target, []byte(render), 0644)
+		err = ioutil.WriteFile(target, render.Bytes(), 0644)
 		if err != nil {
 			entrykit.Error(err)
 		}
