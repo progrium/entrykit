@@ -1,0 +1,25 @@
+daemon off;
+error_log /dev/stdout notice;
+user nobody nogroup;
+worker_processes 1;
+events {
+    worker_connections  1024;
+}
+http {
+  server {
+    listen 80;
+    server_name localhost;
+    access_log /dev/stdout;
+    root /;
+    
+    location / {
+      index /demo/empty.html;
+    }
+
+    location /{{ var "DEMO" | default "demo" }} {
+      index /demo/index.html;
+    }
+
+    include /demo/includes/*.conf;
+  }
+}

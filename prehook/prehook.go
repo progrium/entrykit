@@ -1,8 +1,6 @@
 package prehook
 
 import (
-	"fmt"
-
 	"github.com/progrium/entrykit"
 )
 
@@ -11,6 +9,12 @@ func init() {
 }
 
 func Run(config *entrykit.Config) {
-	//defer entrykit.Exec(config.Exec)
-	entrykit.Error(fmt.Errorf("Not implemented"))
+	defer entrykit.Exec(config.Exec)
+	for _, task := range config.Tasks {
+		cmd := entrykit.CommandTask(task)
+		err := cmd.Run()
+		if err != nil {
+			entrykit.Error(err)
+		}
+	}
 }
