@@ -101,4 +101,4 @@ There is potentially another flag implemented to read config like that from a fi
 
 ## License
 
-MIT 
+MIT
