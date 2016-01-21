@@ -10,6 +10,7 @@ import (
 )
 
 func init() {
+	sigil.PosixPreprocess = true
 	entrykit.Cmds["render"] = Run
 }
 
