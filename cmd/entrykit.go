@@ -7,11 +7,9 @@ import (
 	"github.com/progrium/entrykit"
 
 	_ "github.com/progrium/entrykit/codep"
-	_ "github.com/progrium/entrykit/posthook"
 	_ "github.com/progrium/entrykit/prehook"
 	_ "github.com/progrium/entrykit/render"
 	_ "github.com/progrium/entrykit/switch"
-	_ "github.com/progrium/entrykit/waitgrp"
 )
 
 var Version string
