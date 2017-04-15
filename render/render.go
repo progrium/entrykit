@@ -3,6 +3,8 @@ package render
 import (
 	"io/ioutil"
 	"path/filepath"
+	"os"
+	"syscall"
 	"github.com/gliderlabs/sigil"
 	"github.com/progrium/entrykit"
 
@@ -25,8 +27,20 @@ func Run(config *entrykit.Config) {
 		if err != nil {
 			entrykit.Error(err)
 		}
-		// todo: use same filemode as template
-		err = ioutil.WriteFile(target, render.Bytes(), 0644)
+		fi, err := os.Stat(template)
+		if err != nil {
+		  entrykit.Error(err)
+		}
+		var st syscall.Stat_t
+		err = syscall.Stat(template, &st)
+		if err != nil {
+		  entrykit.Error(err)
+		}
+		err = ioutil.WriteFile(target, render.Bytes(), fi.Mode())
+		if err != nil {
+			entrykit.Error(err)
+		}
+		err = os.Chown(target, int(st.Uid), int(st.Gid))
 		if err != nil {
 			entrykit.Error(err)
 		}
