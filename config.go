@@ -22,6 +22,7 @@ func NewConfig(cmd string, exec bool) *Config {
 	config := &Config{
 		Cmd:   cmd,
 		Tasks: make(map[string]string),
+		TemplateDir: "",
 	}
 	var configFile string
 	var useEnv, namespaceEnv bool
