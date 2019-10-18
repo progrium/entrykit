@@ -1,16 +1,22 @@
 NAME=entrykit
 ARCH=$(shell uname -m)
 ORG=progrium
-VERSION=0.4.0
+VERSION=0.4.1
 
-.PHONY: build release
+.PHONY: build release dep
 
-build:
-	glu build darwin,linux ./cmd
+build: dep
+	go build ./...
+	go test ./...
+	mkdir -p build/Darwin
+	go build -a -installsuffix cgo -ldflags "-X main.Version=$(VERSION)" -o build/Darwin/entrykit ./cmd
+	mkdir -p build/Linux
+	go build -a -installsuffix cgo -ldflags "-X main.Version=$(VERSION)" -o build/Linux/entrykit ./cmd
 
-deps:
-	go get github.com/gliderlabs/glu
-	go get -d ./cmd
+dep:
+	GO111MODULE=on go mod tidy
 
 release:
-	glu release v$(VERSION)
+	git tag v$(VERSION)
+	git push origin v$(VERSION)
+
