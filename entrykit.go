@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"syscall"
 
@@ -81,10 +82,31 @@ func ExecTask(task string) {
 }
 
 func CommandTask(task string) *exec.Cmd {
-	cmdSplit := strings.Fields(task)
+	// Split the task by words or quoted phrases using a regex. `strings.Fields`
+	// splits by spaces including those in quotes, which breaks the command to be
+	// run's argument processing.
+	re := regexp.MustCompile(`[^\s"']+|"([^"]*)"|'([^']*)'`)
+	parts := re.FindAllString(task, -1)
+
+	// And after that, exec.Command can't handle quoted arguments, with results
+	// being a silent failure. Strip those out too.
+	var cmdSplit []string
+	for i := range parts {
+		part := parts[i]
+		if len(part) >= 2 {
+			if part[0] == '\'' && part[len(part)-1] == '\'' {
+				part = part[1 : len(part)-1]
+			} else if part[0] == '"' && part[len(part)-1] == '"' {
+				part = part[1 : len(part)-1]
+			}
+		}
+		cmdSplit = append(cmdSplit, part)
+	}
+
 	cmd := exec.Command(cmdSplit[0], cmdSplit[1:]...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
 	return cmd
 }
 
