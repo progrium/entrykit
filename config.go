@@ -15,12 +15,14 @@ type Config struct {
 	Prefix bool
 	Tasks  map[string]string
 	Exec   []string
+	TemplateDir string
 }
 
 func NewConfig(cmd string, exec bool) *Config {
 	config := &Config{
 		Cmd:   cmd,
 		Tasks: make(map[string]string),
+		TemplateDir: "",
 	}
 	var configFile string
 	var useEnv, namespaceEnv bool
@@ -39,7 +41,11 @@ Loop:
 			config.Prefix = true
 		case "-f":
 			configFile = args[i+1]
+		case "-t":
+			config.TemplateDir = args[i+1]
 		case configFile:
+			continue
+		case config.TemplateDir:
 			continue
 		case "--":
 			if exec {
