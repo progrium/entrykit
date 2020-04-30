@@ -28,9 +28,13 @@ func Codep(tasks map[string]string) error {
 
 	for _, task := range tasks {
 		cmd := entrykit.CommandTask(task)
+		err := cmd.Start()
+		if err != nil {
+			return err
+		}
 		cmds = append(cmds, cmd)
 		go func() {
-			done <- cmd.Run()
+			done <- cmd.Wait()
 		}()
 	}
 	entrykit.ProxySignals(cmds)
